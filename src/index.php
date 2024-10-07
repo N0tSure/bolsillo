@@ -15,30 +15,9 @@
 <body>
 
 <?php
+require_once('data-access.php');
+
 // Functions
-function connect_db() {
-    $db = new SQLite3('mysqlitedb.db');
-    if (!$db) {
-        throw new Exception('Unable connect to database');
-    }
-
-    return $db;
-}
-
-function get_bm_list($db) {
-    $rt = array();
-    $cr = $db->query('SELECT * FROM bookmark');
-    if ($cr) {
-        while ($r = $cr->fetchArray(SQLITE3_ASSOC)) {
-            $rt[$r['id']] = $r['uri'];
-        }
-    } else {
-        throw new Exception('Unable to read bookmarks');
-    }
-
-    return $rt;
-}
-
 function halt($msg) {
     echo '<p><span class="error">' . $msg . '</span></p>';
     exit;
@@ -49,7 +28,13 @@ $header = 'Welcome to Bolsillo!';
 
 echo '<h1>' . htmlspecialchars($header) . '</h1>';
 
-//
+// Add a Markador
+echo '<div>';
+echo '<form action="add-markador.php" method="post">';
+echo '<span><label for="uri">Add</label>';
+echo '<input type="text" id="uri" name="uri" /></span>';
+echo '<span><input type="submit" value="Add" /></span>';
+echo '</form></div>';
 
 //Bookmarks
 
