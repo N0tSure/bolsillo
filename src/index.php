@@ -60,7 +60,10 @@ echo '<tbody>';
 foreach ($bms as $id => $bm) {
     echo '<tr>';
     echo '<td><a href="' . $bm . '">' . htmlspecialchars($bm) . '</a></td>';
-    echo '<td><span>yes</span></td>';
+    echo '<td><span><form action="delete-markador.php" method="POST">';
+    echo '<input type="hidden" name="bm_id" id="bm_id" value="'.$id.'" />';
+    echo '<span><input type="submit" value="Delete" /></span>';
+    echo '</form></span></td>';
     echo '</tr>';
 }
 
