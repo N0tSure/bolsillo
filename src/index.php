@@ -1,21 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    span.error {
-        background: #F5B7B1;
-    }
-</style>
-<title>
-<?= 'Bolsillo :: ' . htmlspecialchars('Home'); ?>
-</title>
-</head>
-<body>
-
 <?php
 require_once('data-access.php');
+require_once('print-helpers.php');
 
 // Functions
 function halt($msg) {
@@ -23,10 +8,11 @@ function halt($msg) {
     exit;
 }
 
-// Home page welcome
-$header = 'Welcome to Bolsillo!';
+// Print header
+print_header('Home');
 
-echo '<h1>' . htmlspecialchars($header) . '</h1>';
+// Home page welcome
+echo '<h1>'.htmlspecialchars('Welcome to Bolsillo!').'</h1>';
 
 // Add a Markador
 echo '<div>';
@@ -37,7 +23,6 @@ echo '<span><input type="submit" value="Add" /></span>';
 echo '</form></div>';
 
 //Bookmarks
-
 $db = null;
 try {
     $db = connect_db();
@@ -54,7 +39,7 @@ try {
 
 echo '<table>';
 echo '<thead><tr>';
-echo '<th>Markador</th><th>Delete?</th>';
+echo '<th>Markador</th>';
 echo '</tr></thead>';
 echo '<tbody>';
 foreach ($bms as $id => $bm) {
@@ -64,6 +49,7 @@ foreach ($bms as $id => $bm) {
     echo '<input type="hidden" name="bm_id" id="bm_id" value="'.$id.'" />';
     echo '<span><input type="submit" value="Delete" /></span>';
     echo '</form></span></td>';
+    echo '<td><span><a href="/update-markador.php?id='.$id.'">Update</a></span></td>';
     echo '</tr>';
 }
 
@@ -71,7 +57,8 @@ echo '</tbody>';
 echo '</table>';
 
 $db->close();
-?>
 
-</body>
-</html>
+// Print footer
+print_footer();
+
+?>
