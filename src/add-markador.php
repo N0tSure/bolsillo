@@ -4,7 +4,7 @@ require_once('data-access.php');
 
 try {
     if (isset($_POST['uri'])) {
-        $bm_uri = addslashes(trim($_POST['uri']));
+        $bm_uri = trim($_POST['uri']);
         if (mb_strlen($bm_uri) > 0) {
             $db = connect_db();
             add_bm($db, $bm_uri);

@@ -1,6 +1,47 @@
 <?php
 
 /*
+ * Creates and executes prepared statement from
+ * provided query.
+ *
+ * Accept parameters in for of an Array, where
+ * key is name of parameter (placeholder). Value
+ * must be array of value and SQL type of it.
+ *
+ * :param $db SQLite3 connection instance
+ * :param $query SQL query to prepare
+ * :param $params parameters to bind
+ * :throws exception in case of unable to prepare
+ * or execute statement
+ */
+function _do_execute_prep_st($db, $query, $params) {
+    if (!empty($params) && count($params) > 0) {
+        $st = $db->prepare($query);
+        if ($st) {
+            foreach ($params as $name => $val) {
+                if (count($val) == 2) {
+                    $v = addslashes($val[0]);
+                    $t = $val[1];
+                    $r = $st->bindParam($name, $v, $t);
+                    if (!$r) {
+                        throw new Exception('Unable to bind prepared statement param: '.$name.', with value "'.$v.'", type: '.$t);
+                    }
+                } else {
+                    throw new Exception('Wrong amount of params passed');
+                }
+            }
+            if (!$st->execute()) {
+                throw new Exception('Fail to execute prepared statment');
+            }
+        } else {
+            throw new Exception('Unable to prepare statement: "'.$query.'"');
+        }
+    } else {
+        throw new Exception ('Params wasnt passed');
+    }
+}
+
+/*
  * Inserts a new bookmark in database.
  *
  * Takes a SQLite3 connection and a new bookmark
@@ -9,19 +50,11 @@
  * failed.
  */
 function add_bm($db, $bm) {
-    $st = $db->prepare('INSERT INTO bookmark(uri) VALUES(:uri)');
-    if ($st) {
-        $br = $st->bindParam(':uri', $bm, SQLITE3_TEXT);
-        if ($br) {
-            if(!$st->execute()) {
-                throw new Exception('Fail to execute prepared statment');
-            }
-        } else {
-            throw new Exception('Unable to bind "uri" prepared statment param');
-        }
-    } else {
-        throw new Exception('Unable to prepare insert statement');
-    }
+    $params = array(
+        ':uri' => array($bm, SQLITE3_TEXT)
+    );
+
+    _do_execute_prep_st($db, 'INSERT INTO bookmark(uri) VALUES(:uri)', $params);
 }
 
 /*
@@ -37,6 +70,18 @@ function connect_db() {
     }
 
     return $db;
+}
+
+/*
+ * Deletes bookmark from database.
+ *
+ * Takes instance of SQLite3 connection.
+ * Takes id of bookmark.
+ * Throws exception whether unable to delete.
+ */
+function delete_bm($db, $id) {
+    $params = array(':id' => array($id, SQLITE3_INTEGER));
+    _do_execute_prep_st($db, 'DELETE FROM bookmark WHERE id = :id', $params);
 }
 
 /*
