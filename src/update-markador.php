@@ -1,15 +1,12 @@
 <?php
 
-require_once('print-helpers.php');
 require_once('data-access.php');
-
-function is_id_valid($id) {
-    return preg_match('/^\d+$/', $id) === 1;
-}
+require_once('common-helpers.php');
+require_once('print-helpers.php');
 
 if (!empty($_GET['id'])) {
     $id = trim($_GET['id']);
-    if (is_id_valid($id)) {
+    if (is_valid_id($id)) {
         try {
             $db = connect_db();
             $bm = get_bm($db, $id);
@@ -43,7 +40,7 @@ if (!empty($_GET['id'])) {
 } elseif (!empty($_POST['id']) && !empty($_POST['uri'])) {
     $id = trim($_POST['id']);
     $uri = trim($_POST['uri']);
-    if (is_id_valid($id) && strlen($uri) > 0) {
+    if (is_valid_id($id) && strlen($uri) > 0) {
         try {
             $db = connect_db();
             update_bm($db, $id, $uri);

@@ -1,11 +1,12 @@
 <?php
 
 require_once('data-access.php');
+require_once('common-helpers.php');
 
 try {
-    if (isset($_POST['bm_id'])) {
+    if (!empty($_POST['bm_id'])) {
         $id = trim($_POST['bm_id']);
-        if (preg_match('/^\d+$/', $id) === 1) {
+        if (is_valid_id($id)) {
             $db = connect_db();
             delete_bm($db, $id);
             $db->close();

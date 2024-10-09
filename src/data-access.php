@@ -55,10 +55,7 @@ function _do_bind_param($st, $name, $value, $type) {
  * failed.
  */
 function add_bm($db, $bm) {
-    $params = array(
-        ':uri' => array($bm, SQLITE3_TEXT)
-    );
-
+    $params = array(':uri' => array($bm, SQLITE3_TEXT));
     _do_execute_prep_st($db, 'INSERT INTO bookmark(uri) VALUES(:uri)', $params);
 }
 
