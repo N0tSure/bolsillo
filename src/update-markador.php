@@ -3,58 +3,8 @@
 require_once('print-helpers.php');
 require_once('data-access.php');
 
-function get_bm($db, $id) {
-    $result = null;
-    $st = $db->prepare('SELECT * FROM bookmark WHERE id = :id');
-    if ($st) {
-        $b = $st->bindParam(':id', $id, SQLITE3_INTEGER);
-        if ($b) {
-            $rs = $st->execute();
-            if ($rs) {
-                $result = $rs->fetchArray(SQLITE3_ASSOC);
-                if (!$result) {
-                    throw new Exception('No bookmark with given id = "'.$id.'"');
-                }
-            } else {
-                throw new Exception('Fail to execute prepared statement');
-            }
-        } else {
-            throw new Exception('Unable to bind id param to prepared statement');
-        }
-
-        $st->close();
-    } else {
-        throw new Exception('Unable to prepare statement');
-    }
-
-    return $result;
-}
-
 function is_id_valid($id) {
     return preg_match('/^\d+$/', $id) === 1;
-}
-
-function update_bm($db, $id, $uri) {
-    $st = $db->prepare('UPDATE bookmark SET uri = :uri WHERE id = :id');
-    if ($st) {
-        $b = $st->bindValue(':id', $id, SQLITE3_INTEGER);
-        if ($b) {
-            $b = $st->bindValue(':uri', $uri, SQLITE3_TEXT);
-            if ($b) {
-                if(!$st->execute()) {
-                    throw new Exception('Fail to execute prepared statement');
-                }
-            } else {
-                throw new Exception('Unable to bind uri param to prepared statement');
-            }
-        } else {
-            throw new Exception('Unable to bind id param to prepared statement');
-        }
-
-        $st->close();
-    } else {
-        throw new Exception('Unable to prepare statement');
-    }
 }
 
 if (!empty($_GET['id'])) {

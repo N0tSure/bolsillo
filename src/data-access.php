@@ -20,17 +20,15 @@ function _do_execute_prep_st($db, $query, $params) {
         if ($st) {
             foreach ($params as $name => $val) {
                 if (count($val) == 2) {
-                    $v = addslashes($val[0]);
-                    $t = $val[1];
-                    $r = $st->bindParam($name, $v, $t);
-                    if (!$r) {
-                        throw new Exception('Unable to bind prepared statement param: '.$name.', with value "'.$v.'", type: '.$t);
-                    }
+                    _do_bind_param($st, $name, $val[0], $val[1]);
                 } else {
                     throw new Exception('Wrong amount of params passed');
                 }
             }
-            if (!$st->execute()) {
+            $result = $st->execute();
+            if ($result) {
+                return $result;
+            } else {
                 throw new Exception('Fail to execute prepared statment');
             }
         } else {
@@ -38,6 +36,13 @@ function _do_execute_prep_st($db, $query, $params) {
         }
     } else {
         throw new Exception ('Params wasnt passed');
+    }
+}
+
+function _do_bind_param($st, $name, $value, $type) {
+    $v = addslashes($value);
+    if (!$st->bindParam($name, $v, $type)) {
+        throw new Exception('Unable to bind prepared statement param: '.$name.', with value "'.$v.'", type: '.$type);
     }
 }
 
@@ -84,6 +89,27 @@ function delete_bm($db, $id) {
     _do_execute_prep_st($db, 'DELETE FROM bookmark WHERE id = :id', $params);
 }
 
+/**
+ * Returns a Bookmark.
+ *
+ * :param $db SQLite3 db connection
+ * :param $id Bookmark id
+ * Return an array having attributes of Bookmark.
+ * Throws exception
+ */
+function get_bm($db, $id) {
+    $p = array(':id' => array($id, SQLITE3_INTEGER));
+    $rs = _do_execute_prep_st($db, 'SELECT * FROM bookmark WHERE id = :id', $p);
+    $result = $rs->fetchArray(SQLITE3_ASSOC);
+    $rs->finalize();
+
+    if ($result) {
+        return $result;
+    } else {
+        throw new Exception('Bookmark wasnt find');
+    }
+}
+
 /*
  * Reads all bookmarks from database.
  *
@@ -104,6 +130,22 @@ function get_bm_list($db) {
     }
 
     return $rt;
+}
+
+/**
+ * Updates a Bookmark.
+ *
+ * :param db SQLite3 db connection
+ * :param id Bookmark id
+ * :param uri Bookmark value
+ * :throws Exception in case of error
+ */
+function update_bm($db, $id, $uri) {
+    $bm_p = array(
+        ':id' => array($id, SQLITE3_INTEGER),
+        ':uri' => array($uri, SQLITE3_TEXT)
+    );
+    _do_execute_prep_st($db, 'UPDATE bookmark SET uri = :uri WHERE id = :id', $bm_p);
 }
 
 ?>
