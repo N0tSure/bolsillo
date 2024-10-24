@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  background: #FEFEFA;
+}
+
+.header {
+  background: url("dot.png") repeat;
+  padding: 20px;
+  text-align: center;
+}
+
+.navbar {
+  background: url("stroke.png") 0 0 repeat;
+  overflow: hidden;
+}
+
+.navbar a {
+  color: black;
+  display: block;
+  float: left;
+  padding: 16px 14px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.navbar a span {
+  background-color: #FEFEFA;
+}
+
+.navbar a.quit-btn {
+  float: right;
+}
+
+.navbar div a:hover {
+  background-color: #FEFEFA;
+}
+
+.navbar a:hover {
+  background: url("mesh.png") repeat;
+  color: black;
+}
+
+.column {
+  float: left;
+  width: 99%;
+  padding: 15px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.add-marcador input[type="text"] {
+  background-color: inherit;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid black;
+  outline: none;
+}
+
+.main-buttons input[type="submit"], input[type="reset"] {
+  background-color: inherit;
+  border: 1px solid black;
+  color: black;
+  padding: 8px 12px;
+  margin: 4px 2px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.main-buttons input[type="submit"]:active, input[type="reset"]:active {
+  background-color: black;
+  color: white;
+}
+
+.marcador-container form {
+  display: inline;
+}
+
+.marcador-container a {
+  display: inline-block;
+  color: black;
+  padding: 6px 0;
+  margin: 4px 0;
+  max-width: 90%;
+  overflow: hidden;
+  text-decoration: none;
+  width: 90%;
+  white-space: nowrap;
+}
+
+.marcador-container a:hover {
+  background-image: url("stroke.png");
+}
+
+.marcador-container a:hover span {
+  background-color: white;
+}
+
+.marcador-container input {
+  float: right;
+}
+
+span.error {
+  background: #FAA0A0;
+}
