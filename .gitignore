@@ -1,2 +1,5 @@
 # SQLite DB files
 *.db
+
+# Idea Folder
+/.idea
