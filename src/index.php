@@ -70,7 +70,7 @@ foreach ($bms as $id => $bm) {
     echo '</form>';
 
     // Update Marcador form
-    echo '<form class="main-buttons" action="update-markador.php" method="GET">';
+    echo '<form class="main-buttons" action="update-marcador-form.php" method="GET">';
     echo '<input type="hidden" name="id" value="'.$id.'"/>';
     echo '<input type="submit" value="Update"/>';
     echo '</form>';
@@ -85,5 +85,4 @@ echo '</div>';
 echo '</div>';
 
 // Footer
-echo '</body>';
-echo '</html>';
+print_footer();
