@@ -44,12 +44,32 @@ body {
   float: left;
   width: 99%;
   padding: 15px;
+  margin-top: .5em;
+}
+
+.column-1-4 {
+  float: left;
+  width: 25%;
+  margin-top: .5em;
+}
+
+.column-3-4 {
+  float: left;
+  width: 75%;
+  margin-top: .5em;
 }
 
 .row:after {
   content: "";
   display: table;
   clear: both;
+}
+
+.main-text-fields input[type="text"], input[type="password"] {
+  background-color: inherit;
+  border: 1px solid black;
+  outline: none;
+  width: 100%;
 }
 
 .add-marcador input[type="text"] {
@@ -119,4 +139,22 @@ body {
   border: 1px solid #FAA0A0;
   position: relative;
   margin-bottom: 8px;
+}
+
+.login-form {
+  margin: auto;
+  width: 30%;
+}
+
+.login-form label {
+  display: inline-block;
+  padding: 6px;
+}
+
+.login-form input[type="text"], input[type="password"] {
+  padding: 6px;
+}
+
+.login-form input[type="submit"] {
+  float: right;
 }
