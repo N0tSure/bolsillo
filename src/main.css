@@ -105,6 +105,18 @@ body {
   float: right;
 }
 
-span.error {
-  background: #FAA0A0;
+.error-message-text {
+  position: absolute;
+  top: 30%;
+  left: 45%;
+  background-color: #FEFEFA;
+  color: #FAA0A0;
+}
+
+.error-message {
+  height: 2.5em;
+  background-image: url("stroke-error.png");
+  border: 1px solid #FAA0A0;
+  position: relative;
+  margin-bottom: 8px;
 }
