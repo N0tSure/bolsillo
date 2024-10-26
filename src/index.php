@@ -1,28 +1,27 @@
 <?php
-require_once('data-access.php');
-require_once('print-helpers.php');
-
 // Functions
 function halt($msg) {
-    echo '<p><span class="error">' . $msg . '</span></p>';
+    echo '<div class="error-message">';
+    echo '<span class="error-message-text">'.htmlspecialchars($msg).'</span>';
+    echo '</div>';
     exit;
 }
 
 // Print header
-print_header('Home');
+$title = 'Home';
+include_once 'header.php';
+include_once 'navbar.php';
 
-// Home page welcome
-echo '<h1>'.htmlspecialchars('Welcome to Bolsillo!').'</h1>';
+// Header
+echo '<div class="header">';
+echo '<h1>Welcome to Bolsillo!</h1>';
+echo '</div>';
 
-// Add a Markador
-echo '<div>';
-echo '<form action="add-markador.php" method="post">';
-echo '<span><label for="uri">Add</label>';
-echo '<input type="text" id="uri" name="uri" /></span>';
-echo '<span><input type="submit" value="Add" /></span>';
-echo '</form></div>';
+// Main content start
+echo '<div class="row">';
+echo '<div class="column">';
 
-//Bookmarks
+require_once('data-access.php');
 $db = null;
 try {
     $db = connect_db();
@@ -33,49 +32,58 @@ try {
 $bms = null;
 try {
     $bms = get_bm_list($db);
+    $db->close();
 } catch (Exception $e) {
+    $db->close();
     halt($e->getMessage());
 }
 
-$db->close();
+// Add Marcador form
+echo '<div class="add-marcador main-buttons">';
+echo '<form action="add-markador.php" method="post">';
+echo '<label for="new_uri">Save a new Marcador to Bolsillo</label>';
+echo '<input type="text" id="new_uri" name="uri" placeholder="Marcador URL"/>';
+echo '<input type="submit" value="Add"/>';
+echo '<input type="reset" value="Clear"/>';
+echo '</form>';
+echo '</div>';
 
-echo '<table>';
-echo '<thead><tr>';
-echo '<th>Markador</th>';
-echo '</tr></thead>';
-echo '<tbody>';
+// Bookmarks
+echo '<div>';
+echo '<p>There are Marcadores that you saved.</p>';
+echo '</div>';
+echo '<div class="marcador-container">';
+
 foreach ($bms as $id => $bm) {
-    echo '<tr>';
+    // Marcador
+    echo '<div class="marcador">';
 
-    echo '<td>';
-    echo '<a href="' . $bm . '">' . htmlspecialchars($bm) . '</a>';
-    echo '</td>';
+    // Marcador Link (anchor element)
+    echo '<a href="'.$bm.'">';
+    echo '<span>'.htmlspecialchars($bm).'</span>';
+    echo '</a>';
 
-    echo '<td>';
-    echo '<form action="delete-markador.php" method="POST">';
-    echo '<input type="hidden" name="bm_id" id="bm_id" value="'.$id.'" />';
-    echo '<span>';
-    echo '<input type="submit" value="Delete" />';
-    echo '</span>';
+    // Delete Marcador form
+    echo '<form class="main-buttons" action="delete-markador.php" method="POST">';
+    echo '<input type="hidden" name="bm_id" value="'.$id.'"/>';
+    echo '<input type="submit" value="Delete"/>';
     echo '</form>';
-    echo '</td>';
 
-    echo '<td>';
-    echo '<form action="update-markador.php" method="GET">';
-    echo '<input type="hidden" name="id" id="id" value="'.$id.'" />';
-    echo '<span>';
-    echo '<input type="submit" value="Update" />';
-    echo '</span>';
+    // Update Marcador form
+    echo '<form class="main-buttons" action="update-markador.php" method="GET">';
+    echo '<input type="hidden" name="id" value="'.$id.'"/>';
+    echo '<input type="submit" value="Update"/>';
     echo '</form>';
-    echo '</td>';
 
-    echo '</tr>';
+    echo '</div>';
 }
 
-echo '</tbody>';
-echo '</table>';
+echo '</div>';
 
-// Print footer
-print_footer();
+// Main content end
+echo '</div>';
+echo '</div>';
 
-?>
+// Footer
+echo '</body>';
+echo '</html>';
