@@ -49,7 +49,7 @@ try {
 <div class="row">
     <div class="column">
         <div class="add-marcador main-buttons">
-            <form action="update-markador.php" method="POST">
+            <form action="update-marcador.php" method="POST">
                 <label for="uri">Update your Marcador in Bolsillo</label>
                 <input type="text" name="uri" id="uri" value="<?= $bm['uri'] ?>" required />
                 <input type="hidden" name="id" value="<?= $bm['id'] ?>"/>
