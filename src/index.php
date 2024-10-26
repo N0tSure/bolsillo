@@ -85,4 +85,5 @@ echo '</div>';
 echo '</div>';
 
 // Footer
+include_once 'common-helpers.php';
 print_footer();
