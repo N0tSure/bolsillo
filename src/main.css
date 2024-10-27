@@ -65,6 +65,10 @@ body {
   clear: both;
 }
 
+.absent {
+  display: none;
+}
+
 .main-text-fields input[type="text"], input[type="password"] {
   background-color: inherit;
   border: 1px solid black;
@@ -125,20 +129,27 @@ body {
   float: right;
 }
 
-.error-message-text {
-  position: absolute;
-  top: 30%;
-  left: 45%;
-  background-color: #FEFEFA;
-  color: #FAA0A0;
-}
-
 .error-message {
   height: 2.5em;
   background-image: url("stroke-error.png");
   border: 1px solid #FAA0A0;
   position: relative;
   margin-bottom: 8px;
+}
+
+.error-message span {
+  position: absolute;
+  top: 30%;
+  background-color: #FEFEFA;
+  color: #FAA0A0;
+}
+
+.error-message-box {
+  left: 30%;
+}
+
+.error-message-text {
+  left: 45%;
 }
 
 .login-form {
