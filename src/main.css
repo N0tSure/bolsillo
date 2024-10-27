@@ -43,7 +43,6 @@ body {
 .column {
   float: left;
   width: 99%;
-  padding: 15px;
   margin-top: .5em;
 }
 
@@ -56,6 +55,18 @@ body {
 .column-3-4 {
   float: left;
   width: 75%;
+  margin-top: .5em;
+}
+
+.column-1-10 {
+  float: left;
+  width: 10%;
+  margin-top: .5em;
+}
+
+.column-9-10 {
+  float: left;
+  width: 90%;
   margin-top: .5em;
 }
 
@@ -101,6 +112,11 @@ body {
   color: white;
 }
 
+.marcadores-paragraph {
+  padding: 6px;
+  margin: 4px;
+}
+
 .marcador-container form {
   display: inline;
 }
@@ -108,12 +124,11 @@ body {
 .marcador-container a {
   display: inline-block;
   color: black;
-  padding: 6px 0;
-  margin: 4px 0;
-  max-width: 90%;
+  padding: 6px;
+  margin: 4px;
   overflow: hidden;
   text-decoration: none;
-  width: 90%;
+  width: 100%;
   white-space: nowrap;
 }
 
