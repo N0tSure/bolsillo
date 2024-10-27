@@ -17,7 +17,8 @@ if (!empty($_POST['login']) && !empty($_POST['password'])):
 
     // Import User service
     require_once 'service.php';
-    $service = new UserService();
+    require_once 'data-access.php';
+    $service = new UserService(new UserDao());
 
     // Get existing User
     try {

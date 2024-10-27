@@ -54,6 +54,7 @@ class User
 
 class UserService
 {
+    private $userDao;
     /**
      * Finds User by login (email) and password. Returns only active user.
      * If User not found, returns false.
@@ -65,20 +66,22 @@ class UserService
      */
    public function findUserByLoginAndPassword($login, $password)
    {
-       if (strcasecmp($login, 'emzorg@zorg.com') == 0) {
-           throw new Exception('Mr. Shadow is listening!');
-       }
+       $passwd_hash = md5($password);
+       $record = $this->userDao->findUser($login, $passwd_hash);
+       $result = false;
+       if ($record):
+           $result = new User($record['name'], $record['email']);
+           $result->setId($record['id']);
+       endif;
 
-       $encrypted = md5($password);
-       if (
-           strcasecmp($login, 'ASir2089@gmail.com') == 0 &&
-           strcmp($encrypted, '6df23dc03f9b54cc38a0fc1483df6e21') == 0
-       ) {
-           $user = new User('Artem Sirosh', 'ASir2089@gmail.com');
-           $user->setId(1);
-           return $user;
-       }
+       return $result;
+   }
 
-       return false;
+    /**
+     * @param $userDao UserDao User's data access object instance
+     */
+   public function __construct($userDao)
+   {
+       $this->userDao = $userDao;
    }
 }
