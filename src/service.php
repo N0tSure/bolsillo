@@ -61,9 +61,14 @@ class UserService
      * @param $login string login (email) not null
      * @param $password string password, not null
      * @return false|User
+     * @throws Exception in case of error when getting user
      */
    public function findUserByLoginAndPassword($login, $password)
    {
+       if (strcasecmp($login, 'emzorg@zorg.com') == 0) {
+           throw new Exception('Mr. Shadow is listening!');
+       }
+
        $encrypted = md5($password);
        if (
            strcasecmp($login, 'ASir2089@gmail.com') == 0 &&
