@@ -1,5 +1,52 @@
 <?php
 
+// Model declarations
+
+/**
+ * Marcador model.
+ */
+class Marcador
+{
+   private $id;
+   private $uri;
+
+    /**
+     * Identifier. If null, this is new.
+     * @return int|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Marcador URI, never null.
+     * @return string
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * Makes this Marcador existing.
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Creates an instance of Marcador.
+     * @param $uri string URI of future Marcador.
+     */
+    public function __construct($uri)
+    {
+        $this->uri = $uri;
+    }
+}
+
 /**
  * User model.
  */
@@ -51,7 +98,40 @@ class User
         $this->email = $email;
     }
 }
+// End of models declarations
 
+// Services declarations.
+
+/**
+ * Marcador service.
+ */
+class MarcadorService
+{
+    /**
+     * All Marcadores in array.
+     *
+     * @param int $user User identifier.
+     * @return array of Marcador instances
+     * @throws Exception in case of error
+     */
+    public function getMarcadores($user)
+    {
+        $result = array();
+        if ($user > 1):
+            foreach (array('foo', 'bar', 'baz') as $i => $uri):
+                $m = new Marcador($uri);
+                $m->setId($i);
+                $result[$i] = $m;
+            endforeach;
+        endif;
+
+        return $result;
+    }
+}
+
+/**
+ * User service.
+ */
 class UserService
 {
     private $userDao;
