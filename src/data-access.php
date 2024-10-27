@@ -1,5 +1,52 @@
 <?php
 
+class UserDao
+{
+    private $connection;
+
+    /**
+     * Finds active user which email and password hash matching with provided.
+     *
+     * @param string $email User email (login)
+     * @param string $passwd User password MD5 hash
+     * @return false|array Array with user id, name and email, or false
+     */
+    public function findUser($email, $passwd)
+    {
+        $result = false;
+        $st = $this->connection->prepare(
+            'SELECT id, username as "name", email FROM users ' .
+            'WHERE email = :email COLLATE NOCASE AND password = :password'
+        );
+
+        if ($st):
+            foreach (array(':email' => $email, ':password' => $passwd) as $param => $value):
+                $br = $st->bindValue($param, $value);
+                if (!$br):
+                    error_log("Unable to bind parameter: [$param] = [$value]");
+                endif;
+            endforeach;
+            $rs = $st->execute();
+            if ($rs):
+                $result = $rs->fetchArray(SQLITE3_ASSOC);
+            endif;
+        endif;
+
+        return $result;
+    }
+
+    public function __construct()
+    {
+        $this->connection = new SQLite3('mysqlitedb.db', SQLITE3_OPEN_READWRITE, '');
+        $this->connection->enableExceptions(true);
+    }
+
+    public function __destruct()
+    {
+        $this->connection->close();
+    }
+}
+
 /*
  * Creates and executes prepared statement from
  * provided query.
