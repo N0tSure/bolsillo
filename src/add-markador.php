@@ -1,11 +1,14 @@
 <?php
 
-require_once('data-access.php');
+// Authenticate user
+require_once 'common-helpers.php';
+authenticate();
 
 try {
     if (!empty($_POST['uri'])) {
         $uri = trim($_POST['uri']);
         if (strlen($uri) > 0) {
+            require_once 'data-access.php';
             $db = connect_db();
             add_bm($db, $uri);
             $db->close();
@@ -21,5 +24,3 @@ try {
 
 header('Location: /index.php', true, 303);
 exit;
-
-?>

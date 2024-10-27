@@ -1,4 +1,8 @@
 <?php
+// Authenticate user
+require_once 'common-helpers.php';
+authenticate();
+
 // Functions
 function halt($msg) {
     echo '<div class="error-message">';
@@ -85,5 +89,4 @@ echo '</div>';
 echo '</div>';
 
 // Footer
-include_once 'common-helpers.php';
 print_footer();

@@ -1,7 +1,10 @@
 <?php
 
+// Authenticate user
+require_once 'common-helpers.php';
+authenticate();
+
 require_once('data-access.php');
-require_once('common-helpers.php');
 
 try {
     if (!empty($_POST['bm_id'])) {

@@ -17,3 +17,17 @@ function print_footer() {
     echo '</body>';
     echo '</html>';
 }
+
+/**
+ * This function authenticates user. Must be called at the start of script.
+ * Forces user to login.
+ * @return void
+ */
+function authenticate()
+{
+    session_start();
+    if (empty($_SESSION['user_id'])):
+        header('Location: login.php', true, 303);
+        exit;
+    endif;
+}

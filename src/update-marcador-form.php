@@ -1,6 +1,8 @@
 <?php
 
-require_once('common-helpers.php');
+// Authenticate user
+require_once 'common-helpers.php';
+authenticate();
 
 // Go home whether no Marcador id passed
 if (empty($_GET['id'])):

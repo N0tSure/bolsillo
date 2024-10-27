@@ -1,12 +1,14 @@
 <?php
 
+// Authenticate user
+require_once('common-helpers.php');
+authenticate();
+
 $id = null;
 $uri = null;
 if (empty($_POST['id'] || empty($_POST['uri']))):
     error_log("Required form parameters not passed: id or/and uri");
 else:
-    require_once('common-helpers.php');
-
     $id = trim($_POST['id']);
     $uri = trim($_POST['uri']);
     if (!is_valid_id($id) || strlen($uri) == 0):
