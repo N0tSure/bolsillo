@@ -25,7 +25,8 @@ $marcadores = false;
 try {
     require_once 'service.php';
     $svc = new MarcadorService();
-    $marcadores = $svc->getMarcadores(1);
+    $usr = $_SESSION['user_id'];
+    $marcadores = $svc->getMarcadores($usr);
 } catch (Exception $e) {
     halt($e->getMessage());
 }
