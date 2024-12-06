@@ -1,8 +1,131 @@
 <?php
 
-class UserDao
+/**
+ * Represents prepared statement parameter.
+ */
+class PrepStmtParameter
+{
+    private $name;
+    private $type;
+    private $value;
+
+    /**
+     * Creates a PrepStmtParameter.
+     *
+     * @param $name string for example, ':email'
+     * @param $type int SQLite3 parameter type
+     * @param $value - any type
+     */
+    public function __construct($name, $type, $value)
+    {
+        $this->name = $name;
+        $this->type = $type;
+        $this->value = $value;
+    }
+
+    public function __toString()
+    {
+        return "PreparedStatementParameter[name='$this->name';type='$this->type';value='$this->value']";
+    }
+
+    function bind(SQLite3Stmt $stmt)
+    {
+        return $stmt->bindValue($this->name, $this->value, $this->type);
+    }
+
+}
+
+/**
+ * This class encapsulates basic DAO functional.
+ */
+abstract class Dao
 {
     private $connection;
+
+    public function __construct()
+    {
+        $this->connection = new SQLite3('mysqlitedb.db', SQLITE3_OPEN_READWRITE, '');
+        $this->connection->enableExceptions(true);
+    }
+
+    public function __destruct()
+    {
+        $this->connection->close();
+    }
+
+    /**
+     * Returns ready connection.
+     *
+     * @return SQLite3 connection
+     */
+    protected function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
+     * This method prepares SQLite3Stmt, binds parameters as values, and executes
+     * statement.
+     *
+     * @param $sql string SQL command or query
+     * @param $params array of PrepStmtParameter
+     * @return false|SQLite3Result
+     */
+    protected function executePrepStmt($sql, $params)
+    {
+        $s = $this->connection->prepare($sql);
+        if ($s):
+            foreach ($params as $p):
+                if(!$p->bind($s)):
+                    error_log("Unable to bind parameter: [$p]");
+                endif;
+            endforeach;
+
+            return $s->execute();
+        endif;
+
+        return false;
+    }
+}
+
+/**
+ * DAO for Marcadores.
+ */
+class MarcadorDao extends Dao
+{
+
+    /**
+     * Returns array of Marcadores.
+     *
+     * @param $user int User identifier
+     * @return false|array Array of Marcadores or false if nothing to return
+     */
+    public function getMarcadores($user)
+    {
+        $rs = $this->executePrepStmt(
+            'SELECT id, uri FROM bookmark WHERE user = :user',
+            array(new PrepStmtParameter(':user', SQLITE3_INTEGER, $user))
+        );
+
+        $result = false;
+        if ($rs):
+            $result = array();
+            while ($cs = $rs->fetchArray(SQLITE3_ASSOC))
+            {
+                $result[$cs['id']] = $cs['uri'];
+            }
+        endif;
+
+        return $result;
+    }
+
+}
+
+/**
+ * DAO for Users.
+ */
+class UserDao extends Dao
+{
 
     /**
      * Finds active user which email and password hash matching with provided.
@@ -14,36 +137,20 @@ class UserDao
     public function findUser($email, $passwd)
     {
         $result = false;
-        $st = $this->connection->prepare(
+        $rs = $this->executePrepStmt(
             'SELECT id, username as "name", email FROM users ' .
-            'WHERE email = :email COLLATE NOCASE AND password = :password'
+            'WHERE email = :email COLLATE NOCASE AND password = :password',
+            array(
+                new PrepStmtParameter(':email', SQLITE3_TEXT, $email),
+                new PrepStmtParameter(':password', SQLITE3_TEXT, $passwd),
+            )
         );
 
-        if ($st):
-            foreach (array(':email' => $email, ':password' => $passwd) as $param => $value):
-                $br = $st->bindValue($param, $value);
-                if (!$br):
-                    error_log("Unable to bind parameter: [$param] = [$value]");
-                endif;
-            endforeach;
-            $rs = $st->execute();
-            if ($rs):
-                $result = $rs->fetchArray(SQLITE3_ASSOC);
-            endif;
+        if ($rs):
+            $result = $rs->fetchArray(SQLITE3_ASSOC);
         endif;
 
         return $result;
-    }
-
-    public function __construct()
-    {
-        $this->connection = new SQLite3('mysqlitedb.db', SQLITE3_OPEN_READWRITE, '');
-        $this->connection->enableExceptions(true);
-    }
-
-    public function __destruct()
-    {
-        $this->connection->close();
     }
 }
 
@@ -154,28 +261,6 @@ function get_bm($db, $id) {
     }
 }
 
-/*
- * Reads all bookmarks from database.
- *
- * Takes SQLite3 DB connection as parameter.
- * Return list where key is bookmark id and
- * value is bookmark itself.
- * Throws exception if unable to read bookmarks.
- */
-function get_bm_list($db) {
-    $rt = array();
-    $cr = $db->query('SELECT * FROM bookmark');
-    if ($cr) {
-        while ($r = $cr->fetchArray(SQLITE3_ASSOC)) {
-            $rt[$r['id']] = $r['uri'];
-        }
-    } else {
-        throw new Exception('Unable to read bookmarks');
-    }
-
-    return $rt;
-}
-
 /**
  * Updates a Bookmark.
  *
@@ -191,5 +276,3 @@ function update_bm($db, $id, $uri) {
     );
     _do_execute_prep_st($db, 'UPDATE bookmark SET uri = :uri WHERE id = :id', $bm_p);
 }
-
-?>
