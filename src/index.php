@@ -24,7 +24,8 @@ echo '</div>';
 $marcadores = false;
 try {
     require_once 'service.php';
-    $svc = new MarcadorService();
+    require_once 'data-access.php';
+    $svc = new MarcadorService(new MarcadorDao());
     $usr = $_SESSION['user_id'];
     $marcadores = $svc->getMarcadores($usr);
 } catch (Exception $e) {

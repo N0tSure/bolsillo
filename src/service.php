@@ -107,25 +107,39 @@ class User
  */
 class MarcadorService
 {
+    private $marcadorDao;
+
     /**
      * All Marcadores in array.
      *
      * @param int $user User identifier.
-     * @return array of Marcador instances
+     * @return false|array of Marcador instances
      * @throws Exception in case of error
      */
     public function getMarcadores($user)
     {
+        $m = $this->marcadorDao->getMarcadores($user);
         $result = array();
-        if ($user > 1):
-            foreach (array('foo', 'bar', 'baz') as $i => $uri):
-                $m = new Marcador($uri);
-                $m->setId($i);
-                $result[$i] = $m;
+        if ($m):
+            $inx = 0;
+            foreach ($m as $i => $uri):
+                $mr = new Marcador($uri);
+                $mr->setId($i);
+                $result[$inx++] = $mr;
             endforeach;
         endif;
 
-        return $result;
+        return count($result) > 0 ? $result : false;
+    }
+
+    /**
+     * Creates an instance of MarcadorService.
+     *
+     * @param $marcadorDao MarcadorDao instance of DAO
+     */
+    public function __construct($marcadorDao)
+    {
+        $this->marcadorDao = $marcadorDao;
     }
 }
 
